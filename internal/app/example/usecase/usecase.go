@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"github.com/ArvarohFX/example-project/config"
+	"github.com/ArvarohFX/example-project/internal/repository"
 	"go.uber.org/zap"
 )
 
@@ -13,6 +14,7 @@ type Usecase interface {
 type usecase struct {
 	cfg    *config.Config
 	logger *zap.SugaredLogger
+	store  *repository.Store
 
 	userUsecase  User
 	orderUsecase Order

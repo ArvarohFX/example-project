@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/12storeez/logzer"
 	"github.com/ArvarohFX/example-project/config"
 	"github.com/ArvarohFX/example-project/internal/app/example/service"
@@ -19,9 +20,25 @@ func main() {
 	svc := service.New(cfg, logger, uc)
 
 	app := fiber.New()
-	app.Get("/", svc.User().Create)
+	app.Post("/user", svc.User().Create)
+	//app.Get("/about", svc.Metadata().About().Get)
+
+	logger.Fatal(app.Listen(fmt.Sprintf(":%d", cfg.Server.Port)))
 }
 
+//string
+//int32
+//int64
+//int
+//float32
+//float64
+//float
+//bool
+//rune
+//byte
+//
+//map[string]int  {"param": 2, "param2": 4}
+//[]string
 //type AnimalInterface interface {
 //	SetName(name string)
 //}
