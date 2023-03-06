@@ -14,16 +14,17 @@ type Usecase interface {
 type usecase struct {
 	cfg    *config.Config
 	logger *zap.SugaredLogger
-	store  *repository.Store
+	store  repository.Store
 
 	userUsecase  User
 	orderUsecase Order
 }
 
-func New(cfg *config.Config, logger *zap.SugaredLogger) Usecase {
+func New(cfg *config.Config, logger *zap.SugaredLogger, store repository.Store) Usecase {
 	return &usecase{
 		cfg:    cfg,
 		logger: logger,
+		store:  store,
 	}
 }
 
@@ -31,7 +32,9 @@ func (s *usecase) User() User {
 	if s.userUsecase != nil {
 		return s.userUsecase
 	}
-	return &userUsecase{}
+	return &userUsecase{
+		store: s.store,
+	}
 }
 
 func (s *usecase) Order() Order {

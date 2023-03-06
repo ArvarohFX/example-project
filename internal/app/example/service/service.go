@@ -32,12 +32,16 @@ func (s *service) User() User {
 	if s.userService != nil {
 		return s.userService
 	}
-	return &userService{}
+	return &userService{
+		usecase: s.usecase,
+	}
 }
 
 func (s *service) Order() Order {
 	if s.orderService != nil {
 		return s.orderService
 	}
-	return &orderService{}
+	return &orderService{
+		usecase: s.usecase,
+	}
 }

@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"github.com/12storeez/logzer"
 	"github.com/ArvarohFX/example-project/config"
+	db "github.com/ArvarohFX/example-project/internal"
 	"github.com/ArvarohFX/example-project/internal/app/example/service"
 	"github.com/ArvarohFX/example-project/internal/app/example/usecase"
+	"github.com/ArvarohFX/example-project/internal/repository"
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
 )
@@ -16,7 +18,13 @@ func main() {
 
 	logger.Infow("service is starting...", zap.Bool("debug", cfg.Server.Debug))
 
-	uc := usecase.New(cfg, logger)
+	dbStorage, err := db.NewDBStorage(cfg, logger, false)
+	if err != nil {
+		logger.Fatal(err)
+	}
+
+	store := repository.New(cfg, logger, dbStorage)
+	uc := usecase.New(cfg, logger, store)
 	svc := service.New(cfg, logger, uc)
 
 	app := fiber.New()

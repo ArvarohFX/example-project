@@ -2,6 +2,7 @@ package repository
 
 import (
 	"github.com/ArvarohFX/example-project/config"
+	db "github.com/ArvarohFX/example-project/internal"
 	"go.uber.org/zap"
 )
 
@@ -11,12 +12,20 @@ type Store interface {
 }
 
 type store struct {
-	//dbStorage *internal.DBStorage
-	cfg    *config.Config
-	logger *zap.SugaredLogger
+	dbStorage *db.DBStorage
+	cfg       *config.Config
+	logger    *zap.SugaredLogger
 
 	userRepository  UserRepository
 	orderRepository OrderRepository
+}
+
+func New(cfg *config.Config, logger *zap.SugaredLogger, dbStorage *db.DBStorage) Store {
+	return &store{
+		dbStorage: dbStorage,
+		cfg:       cfg,
+		logger:    logger,
+	}
 }
 
 func (s *store) User() UserRepository {
@@ -24,12 +33,16 @@ func (s *store) User() UserRepository {
 		return s.userRepository
 	}
 
-	return &userRepository{}
+	return &userRepository{
+		DB: s.dbStorage.DB,
+	}
 }
 
 func (s *store) Order() OrderRepository {
 	if s.orderRepository != nil {
 		return s.orderRepository
 	}
-	return &orderRepository{}
+	return &orderRepository{
+		DB: s.dbStorage.DB,
+	}
 }
